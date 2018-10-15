@@ -33,8 +33,24 @@ def Euler_inverso(y0, t0, h, qtde, func):
 	vetor_y=[]
 	vetor_x.append(t0)
 	vetor_y.append(y0)
-	#for i in range(1, qtde):
-	print("eae")	
+	y_aux=y0
+	t_aux=t0
+	for i in range(1, qtde):
+		t_aux=t0+i*h
+		tn1=t_aux+h	
+		yn1=solve(y_aux+h*(func.subs(t, tn1))-y, implicit=True)
+		vetor_y.append(yn1[0])
+		y_aux=vetor_y[i]
+
+	ref_saida = open("saida.txt", "a")		
+	print("Metodo de Euler Inverso", file=ref_saida)
+	print("Y(" + str(t0) +")=" +str(y0), file=ref_saida)
+	print("h=" +str(h), file=ref_saida)
+	
+	for j in range(0, qtde+1):
+		print(j, vetor_y[j], file=ref_saida)		
+	ref_saida.write('\n')
+	ref_saida.close()
 
 def Euler_aprimorado(y0, t0, h, qtde, func):
 	print("eae")
@@ -77,14 +93,14 @@ def main():
 		valores= linha.split()		
 		if valores[0]== 'euler':
 			Euler(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]))
-		#elif valores[0] == 'euler_inverso':
-		#	Euler_inverso(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]))
-		#if valores[0] == 'euler_aprimorado':
-		#	Euler_aprimorado(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]))
+		elif valores[0] == 'euler_inverso':
+			Euler_inverso(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]))
+		if valores[0] == 'euler_aprimorado':
+			Euler_aprimorado(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]))
 		elif valores[0] == 'runge_kutta':
 			Runge_Kutta(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]))
 
-	#ref_arquivo.close()
+	
 if __name__ == '__main__': 
 	main()
 
