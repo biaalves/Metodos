@@ -107,12 +107,60 @@ def Runge_Kutta(y0, t0, h, qtde, func):
 	
 def Adam_Bashforth(ys, t0, h, qtde, func, ordem):
 	if ordem == 2:
-		
+		pass
 	elif ordem == 3:
+		pass
 	elif ordem == 4:
+		pass
 	elif ordem == 5:
-	elif ordem == 6:
+		vetor_x=[]
+		vetor_y=[]
+		vetor_x.append(t0)
+		vetor_y.append(y0)
+		yn=ys[0]
+		yn1=ys[1]
+		yn2=ys[2]
+		yn3=ys[3]
+		yn4=ys[4]
+		tn4=t0
+		tn3=tn4-h
+		tn2=tn3-h
+		tn1=tn2-h
+		tn=tn1-h
+		
+		for i in range(0, qtde):
+			fn4=1901/720 * (func.subs([(t, tn4), (y, yn4)]))
+			fn3=  1387/360 * (func.subs([(t, tn3), (y, yn3)]))
+			fn2=109/30 * (func.subs([(t, tn2), (y, yn2)]))
+			fn1=  637/360 * (func.subs([(t, tn1), (y, yn1)]))
+			fn=  251/720 * (func.subs([(t, tn), (y, yn)]))
+			yn5 = yn4 + h *(fn4 - fn3 + fn2 - fn1 + fn)
+			tn4=tn4+h
+			tn3=tn4-h
+			tn2=tn3-h
+			tn1=tn2-h
+			tn=tn1-h	
+			yn4=yn5
+			yn3=yn4
+			yn2=yn3
+			yn1=yn2
+			yn=yn1
+			vetor_y.append(yn5)
+			vetor_x.append(tn4)
 
+		print("Metodo de Adam-Bashforth (ordem=5)",  file=arquivo_de_saida)
+		print("Y(" + str(t0) + ") = " + str(y0), file=arquivo_de_saida)
+		print("h = " + str(h), file=arquivo_de_saida)
+	
+		for j in range(0, qtde+1):
+			print(j, vetor_y[j], file=arquivo_de_saida)	
+	
+		arquivo_de_saida.write('\n')
+		
+			
+	
+	elif ordem == 6:
+		pass
 	
 def main():	
 	global arquivo_de_saida
