@@ -106,61 +106,132 @@ def Runge_Kutta(y0, t0, h, qtde, func):
 	arquivo_de_saida.write('\n')
 	
 def Adam_Bashforth(ys, t0, h, qtde, func, ordem):
+	vetor_x=[t0]
+	vetor_y=[]
 	if ordem == 2:
-		pass
+		t_vetor=[t0-h, t0]		
+		vetor_y.append(ys[1])
+		for i in range(0, qtde):
+			fn1 = 3/2 * (func.subs([(t, t_vetor[i+1]), (y, ys[i+1])]))
+			fn= 1/2 * (func.subs([(t, t_vetor[i]), (y, ys[i])]))
+			yn2 = ys[i+1] + h * (fn1 - fn) 
+			ys.append(yn2)
+			tn=t_vetor[i+1] + h
+			t_vetor.append(tn)
+			vetor_y.append(yn2)
+			vetor_x.append(tn)
 	elif ordem == 3:
-		pass
+		t_vetor=[t0 - 2*h, t0-h, t0]		
+		vetor_y.append(ys[2])
+		for i in range(0, qtde):
+			fn2 = 23/12 * (func.subs([(t, t_vetor[i+2]), (y, ys[i+2])]))
+			fn1 = 4/3 * (func.subs([(t, t_vetor[i+1]), (y, ys[i+1])]))
+			fn= 5/12 * (func.subs([(t, t_vetor[i]), (y, ys[i])]))
+			yn3 = ys[i+2] + h * (fn2 - fn1 + fn) 
+			ys.append(yn3)
+			tn=t_vetor[i+2] + h
+			t_vetor.append(tn)
+			vetor_y.append(yn3)
+			vetor_x.append(tn)
+		
 	elif ordem == 4:
-		pass
-	elif ordem == 5:
-		vetor_x=[]
-		vetor_y=[]		
-		yn=ys[0]
-		yn1=ys[1]
-		yn2=ys[2]
-		yn3=ys[3]
-		yn4=ys[4]
-		tn4=t0
-		tn3=tn4-h
-		tn2=tn3-h
-		tn1=tn2-h
-		tn=tn1-h
-		vetor_x.append(t0)
-		vetor_y.append(yn4)
+		t_vetor=[t0 - 3*h, t0 - 2*h, t0-h, t0]		
+		vetor_y.append(ys[3])
+		for i in range(0, qtde):
+			fn3 = 55/24 * (func.subs([(t, t_vetor[i+3]), (y, ys[i+3])]))			
+			fn2 = 59*/24 * (func.subs([(t, t_vetor[i+2]), (y, ys[i+2])]))
+			fn1 = 37/24 * (func.subs([(t, t_vetor[i+1]), (y, ys[i+1])]))
+			fn= 3/8 * (func.subs([(t, t_vetor[i]), (y, ys[i])]))
+			yn4 = ys[i+3] + h * (fn3 - fn2 + fn1 - fn) 
+			ys.append(yn4)
+			tn=t_vetor[i+3] + h
+			t_vetor.append(tn)
+			vetor_y.append(yn4)
+			vetor_x.append(tn)
+
+	elif ordem == 5:	
+		t_vetor=[t0-4*h, t0-3*h, t0-2*h, t0-h, t0]		
+		vetor_y.append(ys[4])
 		
 		for i in range(0, qtde):
-			fn4=1901/720 * (func.subs([(t, tn4), (y, yn4)]))
-			fn3=  1387/360 * (func.subs([(t, tn3), (y, yn3)]))
-			fn2=109/30 * (func.subs([(t, tn2), (y, yn2)]))
-			fn1=  637/360 * (func.subs([(t, tn1), (y, yn1)]))
-			fn=  251/720 * (func.subs([(t, tn), (y, yn)]))
-			yn5 = yn4 + h *(fn4 - fn3 + fn2 - fn1 + fn)
-			tn4=tn4+h
-			tn3=tn4-h
-			tn2=tn3-h
-			tn1=tn2-h
-			tn=tn1-h	
-			yn4=yn5
-			yn3=yn4
-			yn2=yn3
-			yn1=yn2
-			yn=yn1
+			fn4 = 1901/720 * (func.subs([(t, t_vetor[i+4]), (y, ys[i+4])]))
+			fn3 = 1387/360 * (func.subs([(t, t_vetor[i+3]), (y, ys[i+3])]))
+			fn2 = 109/30 * (func.subs([(t, t_vetor[i+2]), (y, ys[i+2])]))
+			fn1 = 637/360 * (func.subs([(t, t_vetor[i+1]), (y, ys[i+1])]))
+			fn = 251/720 * (func.subs([(t, t_vetor[i]), (y, ys[i])]))
+			yn5 = ys[i+4] + h * (fn4 - fn3 + fn2 - fn1 + fn)
+			ys.append(yn5)
+			tn = t_vetor[i+4] + h
+			t_vetor.append(tn)
 			vetor_y.append(yn5)
-			vetor_x.append(tn4)
-
-		print("Metodo de Adam-Bashforth (ordem=5)",  file=arquivo_de_saida)
-		print("Y(" + str(t0) + ") = " + str(vetor_y[0]), file=arquivo_de_saida)
-		print("h = " + str(h), file=arquivo_de_saida)
-	
-		for j in range(0, qtde+1):
-			print(j, vetor_y[j], file=arquivo_de_saida)	
-	
-		arquivo_de_saida.write('\n')
-		
-			
+			vetor_x.append(tn)			
 	
 	elif ordem == 6:
-		pass
+		t_vetor=[t0 - 5*h, t0-4*h, t0-3*h, t0-2*h, t0-h, t0]		
+		vetor_y.append(ys[5])
+		
+		for i in range(0, qtde):
+			fn5 = 4277/1440 * (funs.subs([(t, t_vetor[i+5]), (y, ys[i+5])]))
+			fn4 = 2641/480 * (func.subs([(t, t_vetor[i+4]), (y, ys[i+4])]))
+			fn3 = 4991/720 * (func.subs([(t, t_vetor[i+3]), (y, ys[i+3])]))
+			fn2 = 3649/720 * (func.subs([(t, t_vetor[i+2]), (y, ys[i+2])]))
+			fn1 = 959/480 * (func.subs([(t, t_vetor[i+1]), (y, ys[i+1])]))
+			fn = 95/288 * (func.subs([(t, t_vetor[i]), (y, ys[i])]))
+			yn6 = ys[i+5] + h * (fn5 - fn4 + fn3 - fn2 + fn1 - fn)
+			ys.append(yn6)
+			tn = t_vetor[i+5] + h
+			t_vetor.append(tn)
+			vetor_y.append(yn6)
+			vetor_x.append(tn)	
+
+	elif ordem == 7:
+		t_vetor = [t0 - 6*h, t0 - 5*h, t0-4*h, t0-3*h, t0-2*h, t0-h, t0]		
+		vetor_y.append(ys[6])
+		
+		for i in range(0, qtde):
+			fn6 = 198721/60480 * (funs.subs([(t, t_vetor[i+6]), (y, ys[i+6])]))
+			fn5 = 18637/2520 * (funs.subs([(t, t_vetor[i+5]), (y, ys[i+5])]))
+			fn4 = 235183/20160 * (func.subs([(t, t_vetor[i+4]), (y, ys[i+4])]))
+			fn3 = 10754/945 * (func.subs([(t, t_vetor[i+3]), (y, ys[i+3])]))
+			fn2 = 135713/20160 * (func.subs([(t, t_vetor[i+2]), (y, ys[i+2])]))
+			fn1 = 5603/2520 * (func.subs([(t, t_vetor[i+1]), (y, ys[i+1])]))
+			fn = 19087/60480 * (func.subs([(t, t_vetor[i]), (y, ys[i])]))
+			yn7 = ys[i+6] + h * (fn6 - fn5 + fn4 - fn3 + fn2 - fn1 + fn)
+			ys.append(yn7)
+			tn = t_vetor[i+6] + h
+			t_vetor.append(tn)
+			vetor_y.append(yn7)
+			vetor_x.append(tn)	
+	
+	elif ordem == 8:
+		t_vetor = [t0 - 7*h, t0 - 6*h, t0 - 5*h, t0-4*h, t0-3*h, t0-2*h, t0-h, t0]		
+		vetor_y.append(ys[7])
+		
+		for i in range(0, qtde):
+			fn7 = 16083/4480 * (funs.subs([(t, t_vetor[i+7]), (y, ys[i+7])]))
+			fn6 = 1152169/120960 * (funs.subs([(t, t_vetor[i+6]), (y, ys[i+6])]))
+			fn5 = 242653/13440 * (funs.subs([(t, t_vetor[i+5]), (y, ys[i+5])]))
+			fn4 = 296053/13440 * (func.subs([(t, t_vetor[i+4]), (y, ys[i+4])]))
+			fn3 = 2102243/120960 * (func.subs([(t, t_vetor[i+3]), (y, ys[i+3])]))
+			fn2 = 115747/13440 * (func.subs([(t, t_vetor[i+2]), (y, ys[i+2])]))
+			fn1 = 32863/13440 * (func.subs([(t, t_vetor[i+1]), (y, ys[i+1])]))
+			fn = 5257/17280 * (func.subs([(t, t_vetor[i]), (y, ys[i])]))
+			yn8 = ys[i+7] + h * (fn7 - fn6 + fn5 - fn4 + fn3 - fn2 + fn1 - fn)
+			ys.append(yn8)
+			tn = t_vetor[i+7] + h
+			t_vetor.append(tn)
+			vetor_y.append(yn8)
+			vetor_x.append(tn)	
+
+
+	print("Metodo de Adam-Bashforth (ordem=", ordem, ")",  file=arquivo_de_saida)
+	print("Y(" + str(t0) + ") = " + str(vetor_y[0]), file=arquivo_de_saida)
+	print("h = " + str(h), file=arquivo_de_saida)
+	
+	for j in range(0, qtde+1):
+		print(j, vetor_y[j], file=arquivo_de_saida)	
+	
+	arquivo_de_saida.write('\n')
 	
 def main():	
 	global arquivo_de_saida
@@ -186,4 +257,3 @@ def main():
 	
 if __name__ == '__main__': 
 	main()
-
