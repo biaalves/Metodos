@@ -114,9 +114,7 @@ def Adam_Bashforth(ys, t0, h, qtde, func, ordem):
 		pass
 	elif ordem == 5:
 		vetor_x=[]
-		vetor_y=[]
-		vetor_x.append(t0)
-		vetor_y.append(y0)
+		vetor_y=[]		
 		yn=ys[0]
 		yn1=ys[1]
 		yn2=ys[2]
@@ -127,6 +125,8 @@ def Adam_Bashforth(ys, t0, h, qtde, func, ordem):
 		tn2=tn3-h
 		tn1=tn2-h
 		tn=tn1-h
+		vetor_x.append(t0)
+		vetor_y.append(yn4)
 		
 		for i in range(0, qtde):
 			fn4=1901/720 * (func.subs([(t, tn4), (y, yn4)]))
@@ -149,7 +149,7 @@ def Adam_Bashforth(ys, t0, h, qtde, func, ordem):
 			vetor_x.append(tn4)
 
 		print("Metodo de Adam-Bashforth (ordem=5)",  file=arquivo_de_saida)
-		print("Y(" + str(t0) + ") = " + str(y0), file=arquivo_de_saida)
+		print("Y(" + str(t0) + ") = " + str(vetor_y[0]), file=arquivo_de_saida)
 		print("h = " + str(h), file=arquivo_de_saida)
 	
 		for j in range(0, qtde+1):
@@ -165,9 +165,9 @@ def Adam_Bashforth(ys, t0, h, qtde, func, ordem):
 def main():	
 	global arquivo_de_saida
 	arquivo_de_saida = open("saida.txt", "w")
-	ref_arquivo = open("entrada.txt", "r")
+	arquivo_de_entrada = open("entrada.txt", "r")
 	
-	for linha in ref_arquivo:
+	for linha in arquivo_de_entrada:
 		valores = linha.split()		
 		if valores[0] == 'euler':
 			Euler(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]))
@@ -178,10 +178,10 @@ def main():
 		elif valores[0] == 'runge_kutta':
 			Runge_Kutta(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]))
 		elif valores[0] == 'adam_bashforth':
-			ordem = valores[-1]
-			ys= valores[1:ordem+1]
+			ordem = int(valores[-1])	
+			ys= valores[1 : ordem+1]			
 			ys=list(map(float, ys))
-			Adam_Bashforth(ys, float(valores[ordem+1]), float(valores[oredem+2]), int(valores[ordem+3]), sympify(valores[ordem+4]), ordem)
+			Adam_Bashforth(ys, float(valores[ordem+1]), float(valores[ordem+2]), int(valores[ordem+3]), sympify(valores[ordem+4]), ordem)
 	arquivo_de_saida.close()
 	
 if __name__ == '__main__': 
