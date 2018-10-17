@@ -4,6 +4,14 @@ y, t = symbols('y, t')
 
 arquivo_de_saida = None
 
+def Printar_Arquivo(strr, y0, t0, h, qtde, vetor_y):
+	print("Metodo de", strr, file=arquivo_de_saida)
+	print("y(" + str(t0) + ") = " + str(y0), file=arquivo_de_saida)
+	print("h = " + str(h), file=arquivo_de_saida)
+	for j in range(0, qtde+1):
+		print(j, vetor_y[j], file=arquivo_de_saida)		
+	arquivo_de_saida.write('\n')
+
 
 def Euler(y0, t0, h, qtde, func, cond):
 	#cond eh a variavel que indica se a funcao foi chamada de adams(==1)
@@ -15,16 +23,11 @@ def Euler(y0, t0, h, qtde, func, cond):
 	for i in range(0, qtde):
 		y_aux = y_aux + h * func.subs([(y, y_aux), (t, t_aux)])
 		t_aux = t_aux+h
+		
 		vetor_x.append(t_aux)
 		vetor_y.append(y_aux)
 	if cond == 0: #nao veio de adams, printa no arquivo
-		print("Metodo de Euler", file=arquivo_de_saida)
-		print("y(" + str(t0) + ")=" + str(y0), file=arquivo_de_saida)
-		print("h =", h, file=arquivo_de_saida)
-	
-		for j in range(0, qtde+1):
-			print(j, vetor_y[j], file=arquivo_de_saida)		
-		arquivo_de_saida.write('\n')
+		Printar_Arquivo('Euler', y0, t0, h, qtde, vetor_y)
 	elif cond == 1: #retorna a lista de ys
 		return vetor_y
 def Euler_inverso(y0, t0, h, qtde, func, cond):
@@ -35,10 +38,10 @@ def Euler_inverso(y0, t0, h, qtde, func, cond):
 	y_aux = y0
 	t_aux = t0
 	for i in range(0, qtde):
-		# com metodo de previsao
-		# y_prev = y_aux + func.subs([(y, y_aux), (t, t_aux)]) * h
-		# t_aux = t_aux + h
-		# y_aux = y_aux + func.subs([(y, y_prev), (t, t_aux)]) * h
+		#com metodo de previsao
+		#y_prev = y_aux + func.subs([(y, y_aux), (t, t_aux)]) * h
+		#t_aux = t_aux + h
+		#y_aux = y_aux + func.subs([(y, y_prev), (t, t_aux)]) * h
 		t_aux = t_aux + h
 		yn1 = solve(y_aux + h * (func.subs(t, t_aux) ) - y, y)
 		y_aux = yn1[0]
@@ -47,13 +50,7 @@ def Euler_inverso(y0, t0, h, qtde, func, cond):
 	if cond == 1:
 		return vetor_y
 	elif cond == 0:
-		print("Metodo de Euler Inverso", file=arquivo_de_saida)
-		print("y(" + str(t0) + ") = " + str(y0), file=arquivo_de_saida)
-		print("h = " + str(h), file=arquivo_de_saida)
-	
-		for j in range(0, qtde+1):
-			print(j, vetor_y[j], file=arquivo_de_saida)		
-		arquivo_de_saida.write('\n')
+		Printar_Arquivo('Euler Inverso', y0, t0, h, qtde, vetor_y)
 
 def Euler_Aprimorado(y0, t0, h, qtde, func, cond):
 	vetor_x=[]
@@ -75,13 +72,7 @@ def Euler_Aprimorado(y0, t0, h, qtde, func, cond):
 	if cond == 1:
 		return vetor_y
 	elif cond == 0:
-		print("Metodo de Euler Aprimorado", file=arquivo_de_saida)
-		print("y(" + str(t0) + ") = " + str(y0), file=arquivo_de_saida)
-		print("h = " + str(h), file=arquivo_de_saida)
-	
-		for j in range(0, qtde+1):
-			print(j, vetor_y[j], file=arquivo_de_saida)		
-		arquivo_de_saida.write('\n')
+		Printar_Arquivo('Euler Aprimorado', y0, t0, h, qtde, vetor_y)
 
 def Runge_Kutta(y0, t0, h, qtde, func, cond):
 	vetor_x=[]
@@ -104,14 +95,7 @@ def Runge_Kutta(y0, t0, h, qtde, func, cond):
 	if cond == 1:
 		return vetor_y
 	elif cond == 0:
-		print("Metodo de Runge Kutta", file=arquivo_de_saida)
-		print("Y(" + str(t0) + ") = " + str(y0), file=arquivo_de_saida)
-		print("h = " + str(h), file=arquivo_de_saida)
-	
-		for j in range(0, qtde+1):
-			print(j, vetor_y[j], file=arquivo_de_saida)	
-	
-		arquivo_de_saida.write('\n')
+		Printar_Arquivo('Runge Kutta', y0, t0, h, qtde, vetor_y)
 	
 def Adam_Bashforth(ys, t0, h, qtde, func, ordem, cond):
 	
@@ -165,8 +149,9 @@ def Adam_Bashforth(ys, t0, h, qtde, func, ordem, cond):
 			t_vetor.append(tn)
 				
 	elif ordem == 6:
+		
 		t_vetor=[t0, t0 + h, t0 + 2*h, t0 + 3*h, t0 + 4*h, t0 + 5*h]		
-				
+		
 		for i in range(ordem-1, qtde):
 			fn5 = (4277/1440) * (func.subs([(t, t_vetor[i]), (y, ys[i])]))
 			fn4 = (2641/480) * (func.subs([(t, t_vetor[i-1]), (y, ys[i-1])]))
@@ -174,9 +159,10 @@ def Adam_Bashforth(ys, t0, h, qtde, func, ordem, cond):
 			fn2 = (3649/720) * (func.subs([(t, t_vetor[i-3]), (y, ys[i-3])]))
 			fn1 = (959/480) * (func.subs([(t, t_vetor[i-4]), (y, ys[i-4])]))
 			fn = (95/288) * (func.subs([(t, t_vetor[i-5]), (y, ys[i-5])]))
-			yn6 = ys[i] + h * (fn5 - fn4 + fn3 - fn2 + fn1 - fn)
+			yn6 = ys[i] + (h * (fn5 - fn4 + fn3 - fn2 + fn1 - fn))
 			ys.append(yn6)
 			tn = t_vetor[i] + h
+			
 			t_vetor.append(tn)
 			
 
@@ -217,14 +203,9 @@ def Adam_Bashforth(ys, t0, h, qtde, func, ordem, cond):
 		return ys
 
 	elif cond == 0:
-		print("Metodo de Adam-Bashforth (ordem=", ordem, ")",  file=arquivo_de_saida)
-		print("Y(" + str(t0) + ") = " + str(ys[0]), file=arquivo_de_saida)
-		print("h = " + str(h), file=arquivo_de_saida)
-	
-		for j in range(0, qtde+1):
-			print(j, ys[j], file=arquivo_de_saida)	
-	
-		arquivo_de_saida.write('\n')
+		strr = 'Adam Bashforth (ordem = '+str(ordem)+')'
+		Printar_Arquivo(strr, ys[0], t0, h, qtde, ys)
+		
 
 def Adam_Bashforth_by_method(y0, t0, h, qtde, func, ordem, strr):
 	
@@ -238,14 +219,118 @@ def Adam_Bashforth_by_method(y0, t0, h, qtde, func, ordem, strr):
 		ys = Runge_Kutta(y0, t0, h, ordem-1, func, 1)
 
 	vetor_y = Adam_Bashforth(ys, t0, h, qtde, func, ordem, 1)
-	print("Metodo de Adam-Bashforth por", strr, "(ordem=", ordem, ")",  file=arquivo_de_saida)
-	print("Y(" + str(t0) + ") = " + str(vetor_y[0]), file=arquivo_de_saida)
-	print("h = " + str(h), file = arquivo_de_saida)
-	for j in range(0, qtde+1):
-		print(j, vetor_y[j], file = arquivo_de_saida)
-	arquivo_de_saida.write('\n')
+	strr_2= 'Adam Bashforth por ' + strr + '(ordem=' +str(ordem)+')'
+	Printar_Arquivo(strr_2, vetor_y[0], t0, h, qtde, vetor_y)
 
 def Adam_Multon(ys, t0, h, qtde, func, ordem, cond):
+	if ordem == 2:
+		t_vetor = [t0]
+		for i in range(ordem-2, qtde):
+			t_aux= t_vetor[i] + h #tn+1
+			yn2 = solve( ys[i] + (h/2) * (func.subs(t, t_aux) + func.subs([(t, t_vetor[i]), (y, ys[i])]))-y, y)
+			y_aux= yn2[0]
+			ys.append(y_aux)
+			t_vetor.append(t_aux)
+
+	elif ordem == 3:
+		t_vetor = [t0, t0+h]
+		for i in range(ordem-2, qtde):
+			t_aux=t_vetor[i] + h
+			fn1 = 2/3 * func.subs([(t, t_vetor[i]), (y, ys[i])])
+			fn = 1/12 * func.subs([(t, t_vetor[i-1]), (y, ys[i-1])])
+			yn3 = solve( ys[i] + h * ( 5/12 * func.subs(t, t_aux) + fn1 - fn)-y, y)
+			y_aux= yn3[0]
+			ys.append(y_aux)
+			t_vetor.append(t_aux)
+
+	elif ordem == 4:
+		t_vetor = [t0, t0+h, t0+2*h]
+		for i in range(ordem-2, qtde):
+			t_aux=t_vetor[i] + h
+			fn2 = 19/24 * func.subs([(t, t_vetor[i]), (y, ys[i])])
+			fn1 = 5/24 * func.subs([(t, t_vetor[i-1]), (y, ys[i-1])])
+			fn = 1/24 * func.subs([(t, t_vetor[i-2]), (y, ys[i-2])])
+			yn4 = solve( ys[i] + h * ( 3/8 * func.subs(t, t_aux) + fn2 - fn1 + fn)-y, y)
+			y_aux= yn4[0]
+			ys. append(y_aux)
+			t_vetor.append(t_aux)
+	elif ordem == 5:
+		t_vetor = [t0, t0+h, t0+2*h, t0+3*h]
+		for i in range(ordem-2, qtde):
+			t_aux=t_vetor[i] + h
+			fn3 = 323/360 * func.subs([(t, t_vetor[i]), (y, ys[i])])
+			fn2 = 11/30 * func.subs([(t, t_vetor[i-1]), (y, ys[i-1])])
+			fn1 = 53/360 * func.subs([(t, t_vetor[i-2]), (y, ys[i-2])])
+			fn = 19/720 * func.subs([(t, t_vetor[i-3]), (y, ys[i-3])])
+			yn5 = solve( ys[i] + h * ( 251/720 * func.subs(t, t_aux) + fn3 - fn2 + fn1 - fn)-y, y)
+			y_aux= yn5[0]
+			ys. append(y_aux)
+			t_vetor.append(t_aux)
+	elif ordem == 6:
+		t_vetor = [t0, t0+h, t0+2*h, t0+3*h, t0+4*h]
+		for i in range(ordem-2, qtde):
+			t_aux=t_vetor[i] + h			
+			fn4 = 1427/1440 * func.subs([(t, t_vetor[i]), (y, ys[i])])
+			fn3 = 133/240 * func.subs([(t, t_vetor[i-1]), (y, ys[i-1])])
+			fn2 = 241/720 * func.subs([(t, t_vetor[i-2]), (y, ys[i-2])])
+			fn1 = 173/1440 * func.subs([(t, t_vetor[i-3]), (y, ys[i-3])])
+			fn = 3/160 * func.subs([(t, t_vetor[i-4]), (y, ys[i-4])])
+			yn6 = solve( ys[i] + h * ( 95/288 * func.subs(t, t_aux) + fn4 - fn3 + fn2 - fn1 + fn)-y, y)
+			y_aux= yn6[0]
+			ys. append(y_aux)
+			t_vetor.append(t_aux)
+	elif ordem == 7:
+		t_vetor = [t0, t0+h, t0+2*h, t0+3*h, t0+4*h, t0+5*h]
+		for i in range(ordem-2, qtde):
+			t_aux=t_vetor[i] + h
+			fn5 = 2713/2520 * func.subs([(t, t_vetor[i]), (y, ys[i])])
+			fn4 = 15487/20160 * func.subs([(t, t_vetor[i-1]), (y, ys[i-1])])
+			fn3 = 586/945 * func.subs([(t, t_vetor[i-2]), (y, ys[i-2])])
+			fn2 = 6737/20160 * func.subs([(t, t_vetor[i-3]), (y, ys[i-3])])
+			fn1 = 263/2520 * func.subs([(t, t_vetor[i-4]), (y, ys[i-4])])
+			fn = 863/60480 * func.subs([(t, t_vetor[i-5]), (y, ys[i-5])])
+			yn7 = solve( ys[i] + h * ( 19087/60480 * func.subs(t, t_aux) + fn5 - fn4 + fn3 - fn2 + fn1 - fn)-y, y)
+			y_aux= yn7[0]
+			ys. append(y_aux)
+			t_vetor.append(t_aux)
+	elif ordem == 8:
+		t_vetor = [t0, t0+h, t0+2*h, t0+3*h, t0+4*h, t0+5*h, t0+6*h]
+		for i in range(ordem-2, qtde):
+			t_aux=t_vetor[i] + h
+			fn6 = 139849/120960 * func.subs([(t, t_vetor[i]), (y, ys[i])])
+			fn5 = 4511/4480 * func.subs([(t, t_vetor[i-1]), (y, ys[i-1])])
+			fn4 = 123133/120960 * func.subs([(t, t_vetor[i-2]), (y, ys[i-2])])
+			fn3 = 88547/120960 * func.subs([(t, t_vetor[i-3]), (y, ys[i-3])])
+			fn2 = 1537/4480 * func.subs([(t, t_vetor[i-4]), (y, ys[i-4])])
+			fn1 = 11351/120960 * func.subs([(t, t_vetor[i-5]), (y, ys[i-5])])
+			fn = 275/24192 * func.subs([(t, t_vetor[i-6]), (y, ys[i-6])])
+			yn8 = solve( ys[i] + h * ( 5257/17280 * func.subs(t, t_aux) + fn6 - fn5 + fn4 - fn3 + fn2 - fn1 + fn)-y, y)
+			y_aux= yn8[0]
+			ys. append(y_aux)
+			t_vetor.append(t_aux)
+	
+	if cond == 0:
+		strr = 'Adam Multon (ordem = '+str(ordem)+')'
+		Printar_Arquivo(strr, ys[0], t0, h, qtde, ys)
+	elif cond == 1:
+		return ys
+
+def Adam_Multon_by_method(y0, t0, h, qtde, func, ordem, strr):
+	
+	if strr == 'Euler':
+		ys = Euler(y0, t0, h, ordem-2, func, 1)
+	elif strr == 'Euler Inverso':
+		ys = Euler_Inverso(y0, t0, h, ordem-2, func, 1)
+	elif strr == 'Euler Aprimorado':
+		ys = Euler_Aprimorado(y0, t0, h, ordem-2, func, 1)
+	elif strr == 'Runge Kutta':
+		ys = Runge_Kutta(y0, t0, h, ordem-2, func, 1)
+
+	vetor_y = Adam_Multon(ys, t0, h, qtde, func, ordem, 1)
+	strr_2= 'Adam Multon por ' + strr + '(ordem=' +str(ordem)+')'
+	Printar_Arquivo(strr_2, vetor_y[0], t0, h, qtde, vetor_y)
+
+def Formula_Inversa(ys, t0, h, qtde, func, ordem, cond):
 	if ordem == 2:
 		pass
 	elif ordem == 3:
@@ -256,10 +341,8 @@ def Adam_Multon(ys, t0, h, qtde, func, ordem, cond):
 		pass
 	elif ordem == 6:
 		pass
-	elif ordem == 7:
-		pass
-	elif ordem == 8:
-		pass
+
+#-------------------------MAIN---------------------------------
 def main():	
 	global arquivo_de_saida
 	arquivo_de_saida = open("saida.txt", "w")
@@ -275,7 +358,7 @@ def main():
 			Euler_inverso(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]), 0)
 		elif valores[0] == 'euler_aprimorado':
 
-			Euler_aprimorado(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]), 0)
+			Euler_Aprimorado(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]), 0)
 
 		elif valores[0] == 'runge_kutta':
 
@@ -308,6 +391,27 @@ def main():
 			ys=list(map(float, ys))			
 			Adam_Multon(ys, float(valores[ordem]), float(valores[ordem+1]), int(valores[ordem+2]), sympify(valores[ordem+3]), ordem, 0)
 
+		elif valores[0] == 'adam_multon_by_euler':		
+	
+			Adam_Multon_by_method(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]), int(valores[6]), 'Euler')
+
+		elif valores[0] == 'adam_multon_by_euler_inverso':		
+	
+			Adam_Multon_by_method(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]), int(valores[6]), 'Euler Inverso')
+
+		elif valores[0] == 'adam_multon_by_euler1_aprimorado':		
+	
+			Adam_Multon_by_method(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]), int(valores[6]), 'Euler Aprimorado')
+
+		elif valores[0] == 'adam_multon_by_runge_kutta':		
+	
+			Adam_Multon_by_method(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]), int(valores[6]), 'Runge Kutta')
+	
+		elif valores[0] == 'formula_inversa':
+			ordem = int(valores[-1])	
+			ys= valores[1 : ordem]			
+			ys=list(map(float, ys))			
+			Formula_Inversa(ys, float(valores[ordem]), float(valores[ordem+1]), int(valores[ordem+2]), sympify(valores[ordem+3]), ordem, 0)
 	arquivo_de_saida.close()
 	
 if __name__ == '__main__': 
