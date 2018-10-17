@@ -55,7 +55,7 @@ def Euler_inverso(y0, t0, h, qtde, func, cond):
 			print(j, vetor_y[j], file=arquivo_de_saida)		
 		arquivo_de_saida.write('\n')
 
-def Euler_aprimorado(y0, t0, h, qtde, func, cond):
+def Euler_Aprimorado(y0, t0, h, qtde, func, cond):
 	vetor_x=[]
 	vetor_y=[]
 	vetor_x.append(t0)
@@ -168,12 +168,12 @@ def Adam_Bashforth(ys, t0, h, qtde, func, ordem, cond):
 		t_vetor=[t0, t0 + h, t0 + 2*h, t0 + 3*h, t0 + 4*h, t0 + 5*h]		
 				
 		for i in range(ordem-1, qtde):
-			fn5 = 4277/1440 * (func.subs([(t, t_vetor[i]), (y, ys[i])]))
-			fn4 = 2641/480 * (func.subs([(t, t_vetor[i-1]), (y, ys[i-1])]))
-			fn3 = 4991/720 * (func.subs([(t, t_vetor[i-2]), (y, ys[i-2])]))
-			fn2 = 3649/720 * (func.subs([(t, t_vetor[i-3]), (y, ys[i-3])]))
-			fn1 = 959/480 * (func.subs([(t, t_vetor[i-4]), (y, ys[i-4])]))
-			fn = 95/288 * (func.subs([(t, t_vetor[i-5]), (y, ys[i-5])]))
+			fn5 = (4277/1440) * (func.subs([(t, t_vetor[i]), (y, ys[i])]))
+			fn4 = (2641/480) * (func.subs([(t, t_vetor[i-1]), (y, ys[i-1])]))
+			fn3 = (4991/720) * (func.subs([(t, t_vetor[i-2]), (y, ys[i-2])]))
+			fn2 = (3649/720) * (func.subs([(t, t_vetor[i-3]), (y, ys[i-3])]))
+			fn1 = (959/480) * (func.subs([(t, t_vetor[i-4]), (y, ys[i-4])]))
+			fn = (95/288) * (func.subs([(t, t_vetor[i-5]), (y, ys[i-5])]))
 			yn6 = ys[i] + h * (fn5 - fn4 + fn3 - fn2 + fn1 - fn)
 			ys.append(yn6)
 			tn = t_vetor[i] + h
@@ -184,8 +184,8 @@ def Adam_Bashforth(ys, t0, h, qtde, func, ordem, cond):
 		t_vetor = [t0, t0 + h, t0 + 2*h, t0 + 3*h, t0 + 4*h, t0 + 5*h, t0 + 6*h]		
 			
 		for i in range(ordem-1, qtde):
-			fn6 = 198721/60480 * (funs.subs([(t, t_vetor[i]), (y, ys[i])]))
-			fn5 = 18637/2520 * (funs.subs([(t, t_vetor[i-1]), (y, ys[i-1])]))
+			fn6 = 198721/60480 * (func.subs([(t, t_vetor[i]), (y, ys[i])]))
+			fn5 = 18637/2520 * (func.subs([(t, t_vetor[i-1]), (y, ys[i-1])]))
 			fn4 = 235183/20160 * (func.subs([(t, t_vetor[i-2]), (y, ys[i-2])]))
 			fn3 = 10754/945 * (func.subs([(t, t_vetor[i-3]), (y, ys[i-3])]))
 			fn2 = 135713/20160 * (func.subs([(t, t_vetor[i-4]), (y, ys[i-4])]))
@@ -200,9 +200,9 @@ def Adam_Bashforth(ys, t0, h, qtde, func, ordem, cond):
 		t_vetor = [t0, t0 + h, t0 + 2*h, t0 + 3*h, t0 + 4*h, t0 + 5*h, t0 + 6*h, t0 + 7*h]		
 				
 		for i in range(0, qtde):
-			fn7 = 16083/4480 * (funs.subs([(t, t_vetor[i]), (y, ys[i])]))
-			fn6 = 1152169/120960 * (funs.subs([(t, t_vetor[i-1]), (y, ys[i-1])]))
-			fn5 = 242653/13440 * (funs.subs([(t, t_vetor[i-2]), (y, ys[i-2])]))
+			fn7 = 16083/4480 * (func.subs([(t, t_vetor[i]), (y, ys[i])]))
+			fn6 = 1152169/120960 * (func.subs([(t, t_vetor[i-1]), (y, ys[i-1])]))
+			fn5 = 242653/13440 * (func.subs([(t, t_vetor[i-2]), (y, ys[i-2])]))
 			fn4 = 296053/13440 * (func.subs([(t, t_vetor[i-3]), (y, ys[i-3])]))
 			fn3 = 2102243/120960 * (func.subs([(t, t_vetor[i-4]), (y, ys[i-4])]))
 			fn2 = 115747/13440 * (func.subs([(t, t_vetor[i-5]), (y, ys[i-5])]))
@@ -227,6 +227,7 @@ def Adam_Bashforth(ys, t0, h, qtde, func, ordem, cond):
 		arquivo_de_saida.write('\n')
 
 def Adam_Bashforth_by_method(y0, t0, h, qtde, func, ordem, strr):
+	
 	if strr == 'Euler':
 		ys = Euler(y0, t0, h, ordem-1, func, 1)
 	elif strr == 'Euler Inverso':
@@ -244,8 +245,21 @@ def Adam_Bashforth_by_method(y0, t0, h, qtde, func, ordem, strr):
 		print(j, vetor_y[j], file = arquivo_de_saida)
 	arquivo_de_saida.write('\n')
 
-
-
+def Adam_Multon(ys, t0, h, qtde, func, ordem, cond):
+	if ordem == 2:
+		pass
+	elif ordem == 3:
+		pass
+	elif ordem == 4:
+		pass
+	elif ordem == 5:
+		pass
+	elif ordem == 6:
+		pass
+	elif ordem == 7:
+		pass
+	elif ordem == 8:
+		pass
 def main():	
 	global arquivo_de_saida
 	arquivo_de_saida = open("saida.txt", "w")
@@ -287,6 +301,13 @@ def main():
 		elif valores[0] == 'adam_bashforth_by_runge_kutta':		
 	
 			Adam_Bashforth_by_method(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]), int(valores[6]), 'Runge Kutta')
+	
+		elif valores[0] == 'adam_multon':
+			ordem = int(valores[-1])	
+			ys= valores[1 : ordem]			
+			ys=list(map(float, ys))			
+			Adam_Multon(ys, float(valores[ordem]), float(valores[ordem+1]), int(valores[ordem+2]), sympify(valores[ordem+3]), ordem, 0)
+
 	arquivo_de_saida.close()
 	
 if __name__ == '__main__': 
