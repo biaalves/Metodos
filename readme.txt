@@ -5,7 +5,7 @@
 
 	- Você deve ter no diretório do projeto os arquivos requirements.txt e RUNME
 		* Navegue no terminal até o diretório do projeto e digite o comando- source RUNME
-		* Ele vai criar um ambiente virtual e instalar as bibliotecas necessárias pra rodar o programa(sympy e matplotlib).
+		* Ele vai criar um ambiente virtual e instalar as bibliotecas necessárias pra rodar o programa(sympy).
 
 2. Executando o programa:
 	No diretório do arquivo no terminal, rodar o comando:
