@@ -20,10 +20,10 @@ class MetodosPassoSimples:
       t_aux=t0	
 
       for i in range(0, qtde):
-          y_aux = y_aux + h * func.subs([(y, y_aux), (t, t_aux)])
+          y_aux = y_aux + h * func.subs([(y, y_aux), (t, t_aux)]) # yn+1 = yn + h * f(yn, tn)
           t_aux = t_aux+h
 
-          vetor_x.append(t_aux)
+          vetor_x.append(t_aux) 
           vetor_y.append(y_aux)
 
       return vetor_y
@@ -38,9 +38,11 @@ class MetodosPassoSimples:
           #y_prev = y_aux + func.subs([(y, y_aux), (t, t_aux)]) * h
           #t_aux = t_aux + h
           #y_aux = y_aux + func.subs([(y, y_prev), (t, t_aux)]) * h
+
+		  #sem metodo de previsao
           t_aux = t_aux + h
-          yn1 = solve(y_aux + h * (func.subs(t, t_aux) ) - y, y)
-          y_aux = yn1[0]
+          yn1 = solve(y_aux + h * (func.subs(t, t_aux) ) - y, y) #y yn+1 = yn + h * f(yn+1, tn+1)
+          y_aux = yn1[0] 
           vetor_y.append(y_aux)
           vetor_x.append(t_aux)
 
@@ -57,6 +59,8 @@ class MetodosPassoSimples:
           # com metodo de previsao
           y_prev = y_aux + func.subs([(y, y_aux), (t, tn)]) * h		
           y_aux = y_aux + (func.subs([(y, y_prev), (t, t_aux)])+func.subs([(y, y_aux), (t, tn)])) * h/2
+
+		  #sem metodo de previsao
           #yn1=solve(y_aux + h * (func.subs(t,t_aux) + func.subs([(t, tn), (y, y_aux)])) / 2 - y, y)
           #y_aux = yn1[0]
           vetor_y.append(y_aux)
@@ -75,14 +79,14 @@ class MetodosPassoSimples:
           k3= func.subs([(y, y_aux+((h/2)*k2)), (t, t_aux+(h/2))])
           k4= func.subs([(y, y_aux+(h*k3)), (t, t_aux+h)])
 
-          y_aux = y_aux + ((h/6)*(k1+(2*k2)+(2*k3)+k4))
+          y_aux = y_aux + ((h/6)*(k1+(2*k2)+(2*k3)+k4)) # yn+1 = yn + h/6 * (k1 + 2*k2 + 2*k3 + k4)
           t_aux = t_aux + h
           vetor_x.append(t_aux)
           vetor_y.append(y_aux)
 
 
       return vetor_y
-    
+
 coeficientes_adam_bashforth = [
 	[],
 	[1],
@@ -98,7 +102,7 @@ coeficientes_adam_bashforth = [
 def Adam_Bashforth(ys, t0, h, qtde, func, ordem):
 	cur_coef = coeficientes_adam_bashforth[ordem] # pega os coeficients da ordem atual
 	t_vetor = [t0] # cria o t_vetor inicial
-	for i in range(1, ordem):
+	for i in range(1, ordem): 
 		t_vetor.append(t_vetor[i - 1] + h)
 		
 	for i in range(ordem-1, qtde):
@@ -112,11 +116,11 @@ def Adam_Bashforth(ys, t0, h, qtde, func, ordem):
 	return ys		
 
 def Adam_Bashforth_by_method(y0, t0, h, qtde, func, ordem, strr):
-	ys = getattr(MetodosPassoSimples, strr)(y0, t0, h, ordem-1, func)
+	ys = getattr(MetodosPassoSimples, strr)(y0, t0, h, ordem-1, func) #procura na classe a funcao de strr e manda os parametros
 	vetor_y = Adam_Bashforth(ys, t0, h, qtde, func, ordem)
 	strr_2= 'Adam Bashforth por ' + strr + '(ordem=' +str(ordem)+')'
 	Printar_Arquivo(strr_2, vetor_y[0], t0, h, qtde, vetor_y)
-
+#coeficientes que vao ser usados para calcular adam moulton
 coeficientes_adam_moulton = [
 	[],
 	[1],
@@ -147,7 +151,7 @@ def Adam_Multon(ys, t0, h, qtde, func, ordem):
 	return ys
   
 def Adam_Multon_by_method(y0, t0, h, qtde, func, ordem, strr):
-	ys = getattr(MetodosPassoSimples, strr)(y0, t0, h, ordem-2, func)
+	ys = getattr(MetodosPassoSimples, strr)(y0, t0, h, ordem-2, func) #procura na classe a funcao de strr e manda os parametros
 	vetor_y = Adam_Multon(ys, t0, h, qtde, func, ordem)
 	strr_2= 'Adam Multon por ' + strr + '(ordem=' +str(ordem)+')'
 	Printar_Arquivo(strr_2, vetor_y[0], t0, h, qtde, vetor_y)
@@ -167,7 +171,7 @@ coeficientes_formula_inversa = [
 def Formula_Inversa(ys, t0, h, qtde, func, ordem):
 	cur_coef = coeficientes_formula_inversa[ordem] # pega os coeficientes da ordem atual
 	t_vetor = [t0] # cria o t_vetor inicial
-	for i in range(1, ordem - 1):
+	for i in range(1, ordem - 1): 
 		t_vetor.append(t_vetor[i - 1] + h)
 		
 	for i in range(ordem-2, qtde):
@@ -182,7 +186,7 @@ def Formula_Inversa(ys, t0, h, qtde, func, ordem):
 	return ys
 
 def Formula_Inversa_by_method(y0, t0, h, qtde, func, ordem, strr):
-	ys = getattr(MetodosPassoSimples, strr)(y0, t0, h, ordem-2, func)
+	ys = getattr(MetodosPassoSimples, strr)(y0, t0, h, ordem-2, func) #procura na classe a funcao de strr e manda os parametros
 	vetor_y = Formula_Inversa(ys, t0, h, qtde, func, ordem)
 	strr_2= 'Formula Inversa de Diferenciacao por ' + strr + '(ordem=' +str(ordem)+')'
 	Printar_Arquivo(strr_2, vetor_y[0], t0, h, qtde, vetor_y)

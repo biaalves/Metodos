@@ -46,5 +46,12 @@
 		Ex: 1-t+4*y
 4. Saída:
 	- Um arquivo txt é gerado com as saidas do arquivo de entrada (saida.txt)
-	
+	- Para cada método calculado, no arquivo de saída deverar ter:
+			Nome do Método
+			y( valor_do_t(0) ) = valor_do_y(0)
+			h = valor_do_h
+			numero_do_passo_0 valor_y_0
+			numero_do_passo_1 valor_y_1
+			numero_do_passo_2 valor_y_2
+
 	
