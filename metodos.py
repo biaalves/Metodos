@@ -152,9 +152,40 @@ def Adam_Multon_by_method(y0, t0, h, qtde, func, ordem, strr):
 	strr_2= 'Adam Multon por ' + strr + '(ordem=' +str(ordem)+')'
 	Printar_Arquivo(strr_2, vetor_y[0], t0, h, qtde, vetor_y)
 
-def Formula_Inversa(ys, t0, h, qtde, func, ordem):
-	pass
+coeficientes_formula_inversa = [
+	[],
+	[],
+	[1,           1],
+	[2/3,         4/3,            -1/3],
+	[6/11,       18/11,           -9/11,        2/11],
+	[12/25,      48/25,          -36/25,       16/25,       -3/25],
+	[60/137,    300/137,        -300/137,     200/137,     -75/137,   12/137],
+	[60/147,    360/147,        -450/147,     400/147,    -225/147,   72/147,    -10/147],
+]
+    
 
+def Formula_Inversa(ys, t0, h, qtde, func, ordem):
+	cur_coef = coeficientes_formula_inversa[ordem] # pega os coeficients da ordem atual
+	t_vetor = [t0] # cria o t_vetor inicial
+	for i in range(1, ordem - 1):
+		t_vetor.append(t_vetor[i - 1] + h)
+		
+	for i in range(ordem-2, qtde):
+		sum_fn = 0
+		for j in range(ordem-1): # calcula a soma dos fn * coeficiente
+			sum_fn += cur_coef[j + 1] * ys[i-j]
+		t_aux = t_vetor[i] + h
+		yn = solve(sum_fn + h * ( cur_coef[0] * func.subs(t, t_aux)) - y, y)# calcula novo y
+		y_aux = yn[0]
+		ys.append(y_aux)
+		t_vetor.append(t_aux)
+	return ys
+
+def Formula_Inversa_by_method(y0, t0, h, qtde, func, ordem, strr):
+	ys = getattr(MetodosPassoSimples, strr)(y0, t0, h, ordem-2, func)
+	vetor_y = Formula_Inversa(ys, t0, h, qtde, func, ordem)
+	strr_2= 'Formula Inversa de Diferenciacao por ' + strr + '(ordem=' +str(ordem)+')'
+	Printar_Arquivo(strr_2, vetor_y[0], t0, h, qtde, vetor_y)
 #-------------------------MAIN---------------------------------
 def main():	
 	global arquivo_de_saida
@@ -200,7 +231,7 @@ def main():
 			ys = list(map(float, ys))			
 			vetor_y = Adam_Multon(ys, float(valores[ordem]), float(valores[ordem+1]), int(valores[ordem+2]), sympify(valores[ordem+3]), ordem)
 			strr = 'Adam Moulton (ordem = '+str(ordem)+')'
-			Printar_Arquivo(strr, vetor_y[0], float(valores[ordem]), float(valores[ordem+1]), int(valores[ordem+3]), vetor_y)
+			Printar_Arquivo(strr, vetor_y[0], float(valores[ordem]), float(valores[ordem+1]), int(valores[ordem+2]), vetor_y)
 
 		elif valores[0].startswith('adam_multon_by_'):		
 			metodo_auxiliar = valores[0][15:]
@@ -210,11 +241,14 @@ def main():
 			ordem = int(valores[-1])	
 			ys= valores[1 : ordem]			
 			ys=list(map(float, ys))			
-			Formula_Inversa(ys, float(valores[ordem]), float(valores[ordem+1]), int(valores[ordem+2]), sympify(valores[ordem+3]), ordem)
+			vetor_y = Formula_Inversa(ys, float(valores[ordem]), float(valores[ordem+1]), int(valores[ordem+2]), sympify(valores[ordem+3]), ordem)
+			strr = 'Formula Inversa de Diferenciacao (ordem = '+str(ordem)+')'
+			Printar_Arquivo(strr, vetor_y[0], float(valores[ordem]), float(valores[ordem+1]), int(valores[ordem+2]), vetor_y)
             
 		elif valores[0].startswith('formula_inversa_by_'):		
 			metodo_auxiliar = valores[0][19:]
-			Formula_Inversa_by_method(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]), int(valores[6]), metodo_auxiliar)
+			vetor_y = Formula_Inversa_by_method(float(valores[1]), float(valores[2]), float(valores[3]), int(valores[4]), sympify(valores[5]), int(valores[6]), metodo_auxiliar)		
+		
 	arquivo_de_saida.close()
 	
 if __name__ == '__main__': 
